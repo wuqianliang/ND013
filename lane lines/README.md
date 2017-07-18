@@ -1,19 +1,5 @@
 # **Finding Lane Lines on the Road** 
 
----
-
-**Finding Lane Lines on the Road**
-
-The goals / steps of this project are the following:
-* Make a pipeline that finds lane lines on the road
-* Reflect on your work in a written report
-
-
-[//]: # (Image References)
-
-[image1]: ./examples/grayscale.jpg "Grayscale"
-
----
 
 ### Reflection
 
@@ -36,6 +22,7 @@ In order to draw a single line on the left and right lanes, I use Canny Edge Det
 ### 2. shortcomings
 
 In the optional challenge video, the lanes are some jittering where there are some shadows. 
+
 The actual lane is curved, and lines I painted is straight.
 
 
