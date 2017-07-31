@@ -1,0 +1,4 @@
+With parameter sharing, each neuron in an output channel shares its weights with every other neuron in that channel.
+(也就是说filter窗口在原始图像上sliding的时候，权重不变，所以每个输出channel 只有 filter HXWXD个参数)
+So the number of parameters is equal to the number of neurons in the filter, plus a bias neuron, 
+all multiplied by the number of channels in the output layer.
