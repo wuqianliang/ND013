@@ -1,9 +1,9 @@
 # **Traffic Sign Recognition Classifier** 
 
 ## Submissions
-Traffic_Sign_Classifier.ipynb : Build a Traffic Signs Classifier. Get 93.4.0% accuracy on the test dataset using one Convolutional neural network. The trained model only get 40% accuracy on 10 new images from web.
-report.html :  html verson of Traffic_Sign_Classifier.ipynb.
-test fold: 10 new images from web.
+#####Traffic_Sign_Classifier.ipynb : Build a Traffic Signs Classifier. Get 93.4.0% accuracy on the test dataset using one Convolutional neural network. The trained model only get 40% accuracy on 10 new images from web.
+#####report.html :  html verson of Traffic_Sign_Classifier.ipynb.
+#####test fold: 10 new images from web.
 
 
 ## Reflection
