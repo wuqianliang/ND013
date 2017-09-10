@@ -1,2 +1,2 @@
-model_checkpoint_path: "tscnet"
-all_model_checkpoint_paths: "tscnet"
+model_checkpoint_path: "lenet"
+all_model_checkpoint_paths: "lenet"
