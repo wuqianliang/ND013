@@ -15,7 +15,7 @@
 4. Define Model Architecture,train pipeline, model evaluate funtion;
 5. Train model using L2 normalization pennalty and dropout techniques to prevent overfitting;
 6. Use test dataset to evaluate trained model.
-7. Test trained model on new images(use same preprocess pipeline above) and get a 40% accuracy (not good);
+7. Test trained model on new images(use same preprocess pipeline above) and get a 50% accuracy;
 8. Output top 5 softmax probabilities for each new test image .
 
 ### 2. Discussions
