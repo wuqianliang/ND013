@@ -1,7 +1,7 @@
 # **Traffic Sign Recognition Classifier** 
 
 ## Submissions
-`Traffic_Sign_Classifier.ipynb` : Build a Traffic Signs Classifier. Get 93.4.0% accuracy on the test dataset using one Convolutional neural network. The trained model only get 40% accuracy on 10 new images from web.  
+`Traffic_Sign_Classifier.ipynb` : Build a Traffic Signs Classifier. Get 94.7% accuracy on the test dataset using one Convolutional neural network. The trained model get 50% accuracy on 10 new images from web.  
 `report.html` :  html verson of Traffic_Sign_Classifier.ipynb.  
 `test fold`: 10 new images from web.
 
@@ -18,12 +18,7 @@
 7. Test trained model on new images(use same preprocess pipeline above) and get a 40% accuracy (not good);
 8. Output top 5 softmax probabilities for each new test image .
 
-### 2. shortcomings
-1. Trained model only get 97% accuracy more or less on valid dataset.
-2. Center normalization seems not useful for improving validating accuracy.
-
-### 3. Suggest possible improvements to project
-1. Maybe there is some other data augmentation techniques that may help.
-2. Through analysis classificaton bad cases to get some helpful information on model accuracy promoting.
+### 2. Discussions
+Required changes of last submission's review  included in the report.html
 
 
