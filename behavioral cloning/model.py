@@ -107,26 +107,26 @@ def create_nvidia_model_2():
 	#model.add(Dropout(0.2))
 	model.add(Conv2D(48, 5, 5, subsample=(2, 2), border_mode="same",kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 	model.add(Activation('relu'))
-	#model.add(Dropout(0.2))
+	model.add(Dropout(0.2))
 	model.add(Conv2D(64, 3, 3, subsample=(2, 2), border_mode="same",kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 	model.add(Activation('relu'))
-	#model.add(Dropout(0.2))
+	model.add(Dropout(0.2))
 	model.add(Conv2D(64, 3, 3, W_regularizer=regularizers.l2(0.0001),subsample=(2, 2), border_mode="same",kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 	model.add(Flatten())
 	model.add(Activation('relu'))
-	#model.add(Dropout(0.2))
+	model.add(Dropout(0.2))
 	model.add(Dense(100,kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None),kernel_regularizer=regularizers.l2(0.0001),activity_regularizer=regularizers.l1(0.0001)))
 	model.add(Activation('relu'))
-	#model.add(Dropout(0.2))
+	model.add(Dropout(0.2))
 	model.add(Dense(50,kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 	model.add(Activation('relu'))
-	#model.add(Dropout(0.2))
+	model.add(Dropout(0.2))
 	model.add(Dense(10,kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 	model.add(Activation('relu'))
 	model.add(Dense(1,kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 
-#	model.compile(optimizer="adam", loss="mse")
-	model.compile(optimizer=sgd, loss="mse")
+	model.compile(optimizer="adam", loss="mse")
+#	model.compile(optimizer=sgd, loss="mse")
 
 	print('Model is created and compiled..')
 	return model
@@ -142,7 +142,7 @@ if __name__ == "__main__":
 	history_object = _model.fit_generator(
 		train_generator, 
 		steps_per_epoch=len(train_samples)/BATCHSIZE,
-		epochs=EPOCH,
+		epochs=3,
 		verbose=1,
 		callbacks=[lrate],
 		validation_data = validation_generator,
