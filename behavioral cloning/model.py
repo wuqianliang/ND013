@@ -24,24 +24,21 @@ from keras.layers import Dropout
 ch = 3
 row = 160
 col = 320
-BATCHSIZE=32
+BATCHSIZE=64
 EPOCH=1
 #width 320 height 160 channel 3
 
-sample_size=10000
+
 samples = []
-i=0
+
 with open('./driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
         samples.append(line)
-        i=i+1
-        if i > sample_size:
-            break
 
 
 from sklearn.model_selection import train_test_split
-train_samples, validation_samples = train_test_split(samples, test_size=0.2)
+train_samples, validation_samples = train_test_split(samples, test_size=0.3)
 
 import sklearn
 
@@ -92,6 +89,38 @@ lrate = LearningRateScheduler(step_decay)
 sgd = SGD(lr=0.002, momentum=0.9, decay=0.0, nesterov=False)
 
 
+def create_nvidia_model_1():
+
+	model = Sequential()
+	#data preprocess
+	model.add(Lambda(lambda x: x/255.0 - 0.5,input_shape=(row, col, ch),output_shape=(row, col, ch)))
+	#cropping
+	model.add(Cropping2D(cropping=((70,25),(0,0))))
+
+	model.add(Conv2D(24, 5, 5, subsample=(2, 2), border_mode="same", input_shape=(row, col, ch)))
+	model.add(Activation('relu'))
+	model.add(Conv2D(36, 5, 5, subsample=(2, 2), border_mode="same"))
+	model.add(Activation('relu'))
+	model.add(Conv2D(48, 5, 5, subsample=(2, 2), border_mode="same"))
+	model.add(Activation('relu'))
+	model.add(Conv2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
+	model.add(Activation('relu'))
+	model.add(Conv2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
+	model.add(Flatten())
+	model.add(Activation('relu'))
+	model.add(Dense(100))
+	model.add(Activation('relu'))
+	model.add(Dense(50))
+	model.add(Activation('relu'))
+	model.add(Dense(10))
+	model.add(Activation('relu'))
+	model.add(Dense(1))
+
+	model.compile(optimizer="adam", loss="mse")
+
+	print('Model is created and compiled..')
+	return model
+
 def create_nvidia_model_2():
 
 	model = Sequential()
@@ -134,7 +163,7 @@ def create_nvidia_model_2():
 if __name__ == "__main__":
 
 
-	_model= create_nvidia_model_2()
+	_model= create_nvidia_model_1()
 
 	print(_model.summary())
 	print(len(train_samples),BATCHSIZE)
