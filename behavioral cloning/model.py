@@ -4,6 +4,7 @@ import numpy as np
 import csv
 import cv2
 import os,math
+import sklearn
 import matplotlib.pyplot as plt
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Lambda, ELU, Activation
@@ -161,7 +162,7 @@ def create_nvidia_model_2():
 	model.add(Dropout(0.2))
 	model.add(Conv2D(64, 3, 3, 
 		subsample=(2, 2), border_mode="same",
-		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)
+		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None),
 		kernel_regularizer=regularizers.l2(0.001),
 		activity_regularizer=regularizers.l1(0.001)))
 	model.add(Flatten())
@@ -219,7 +220,7 @@ if __name__ == "__main__":
 	_model.save('./model.h5')
 
 	with open('log_adam_64.txt','w') as f:
-        f.write(str(history.history))
+		f.write(str(history.history))
 
 '''
 	### print the keys contained in the history object
