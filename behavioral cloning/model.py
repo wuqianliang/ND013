@@ -182,8 +182,8 @@ def create_nvidia_model_2():
 	model.add(Activation('relu'))
 	model.add(Dense(1,kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 
-#	model.compile(optimizer="adam", loss="mse")
-	model.compile(optimizer=keras.optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004), loss="mse")
+	model.compile(optimizer="adam", loss="mse")
+#	model.compile(optimizer=keras.optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004), loss="mse")
 
 	print('Model is created and compiled..')
 	return model
