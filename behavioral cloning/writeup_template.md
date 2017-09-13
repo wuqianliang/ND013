@@ -73,28 +73,74 @@ For details about how I created the training data, see the next section.
 
 ####1. Solution Design Approach
 
-The overall strategy for deriving a model architecture was to copy the?Nvidia?pipeline.
+The overall strategy for deriving a model architecture was to copy the Nvidia pipeline.
 
-My first step was to use a convolution neural network model similar to the network from Nvidia paper "EndtoEndLearningforSelf-DrivingCars
-" I thought this model might be appropriate because in paper, authors show they sucessfully used 'the network' to 
+My first step was to use a convolution neural network model similar to the network from Nvidia paper "End to End Learning for Self-DrivingCars".
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+I thought this model might be appropriate because in paper, authors show they sucessfully used 'the network' to predict steering angle and made good performence.
 
-To combat the overfitting, I modified the model so that ...
+In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. 
 
-Then I ... 
+I found that my first model had a low mean squared error on the training set and a low mean squared error on the validation set.
 
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
+This implied that the model was smart to learn the driving behavior, but there were a few spots where the vehicle fell off the track. 
+
+I found that there is no such road situation image in the dataset, to improve the driving behavior in these cases, I record new image data in the spots to add to train dataset.
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
 ####2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
+The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers.
 
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
-
-![alt text][image1]
+Here is a visualization of the architecture:
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+lambda_1 (Lambda)            (None, 160, 320, 3)       0
+_________________________________________________________________
+cropping2d_1 (Cropping2D)    (None, 65, 320, 3)        0
+_________________________________________________________________
+conv2d_1 (Conv2D)            (None, 33, 160, 24)       1824
+_________________________________________________________________
+activation_1 (Activation)    (None, 33, 160, 24)       0
+_________________________________________________________________
+conv2d_2 (Conv2D)            (None, 17, 80, 36)        21636
+_________________________________________________________________
+activation_2 (Activation)    (None, 17, 80, 36)        0
+_________________________________________________________________
+conv2d_3 (Conv2D)            (None, 9, 40, 48)         43248
+_________________________________________________________________
+activation_3 (Activation)    (None, 9, 40, 48)         0
+_________________________________________________________________
+conv2d_4 (Conv2D)            (None, 5, 20, 64)         27712
+_________________________________________________________________
+activation_4 (Activation)    (None, 5, 20, 64)         0
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 5, 20, 64)         0
+_________________________________________________________________
+conv2d_5 (Conv2D)            (None, 3, 10, 64)         36928
+_________________________________________________________________
+flatten_1 (Flatten)          (None, 1920)              0
+_________________________________________________________________
+activation_5 (Activation)    (None, 1920)              0
+_________________________________________________________________
+dense_1 (Dense)              (None, 100)               192100
+_________________________________________________________________
+activation_6 (Activation)    (None, 100)               0
+_________________________________________________________________
+dropout_2 (Dropout)          (None, 100)               0
+_________________________________________________________________
+dense_2 (Dense)              (None, 50)                5050
+_________________________________________________________________
+activation_7 (Activation)    (None, 50)                0
+_________________________________________________________________
+dense_3 (Dense)              (None, 10)                510
+_________________________________________________________________
+activation_8 (Activation)    (None, 10)                0
+_________________________________________________________________
+dense_4 (Dense)              (None, 1)                 11
+_________________________________________________________________
 
 ####3. Creation of the Training Set & Training Process
 
