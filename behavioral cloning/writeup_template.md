@@ -69,9 +69,9 @@ Training data was chosen to keep the vehicle driving on the road. I used a combi
 
 For details about how I created the training data, see the next section. 
 
-###Model Architecture and Training Strategy
+### Model Architecture and Training Strategy
 
-####1. Solution Design Approach
+#### 1. Solution Design Approach
 
 The overall strategy for deriving a model architecture was to copy the Nvidia pipeline.
 
@@ -89,58 +89,12 @@ I found that there is no such road situation image in the dataset, to improve th
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
-####2. Final Model Architecture
+#### 2. Final Model Architecture
 
 The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers.
 
 Here is a visualization of the architecture:
-#_________________________________________________________________
-Layer (type)                 Output Shape              Param #
-#=================================================================
-lambda_1 (Lambda)            (None, 160, 320, 3)       0
-#_________________________________________________________________
-cropping2d_1 (Cropping2D)    (None, 65, 320, 3)        0
-#_________________________________________________________________
-conv2d_1 (Conv2D)            (None, 33, 160, 24)       1824
-#_________________________________________________________________
-activation_1 (Activation)    (None, 33, 160, 24)       0
-#_________________________________________________________________
-conv2d_2 (Conv2D)            (None, 17, 80, 36)        21636
-#_________________________________________________________________
-activation_2 (Activation)    (None, 17, 80, 36)        0
-#_________________________________________________________________
-conv2d_3 (Conv2D)            (None, 9, 40, 48)         43248
-#_________________________________________________________________
-activation_3 (Activation)    (None, 9, 40, 48)         0
-#_________________________________________________________________
-conv2d_4 (Conv2D)            (None, 5, 20, 64)         27712
-#_________________________________________________________________
-activation_4 (Activation)    (None, 5, 20, 64)         0
-#_________________________________________________________________
-dropout_1 (Dropout)          (None, 5, 20, 64)         0
-#_________________________________________________________________
-conv2d_5 (Conv2D)            (None, 3, 10, 64)         36928
-#_________________________________________________________________
-flatten_1 (Flatten)          (None, 1920)              0
-#_________________________________________________________________
-activation_5 (Activation)    (None, 1920)              0
-#_________________________________________________________________
-dense_1 (Dense)              (None, 100)               192100
-#_________________________________________________________________
-activation_6 (Activation)    (None, 100)               0
-#_________________________________________________________________
-dropout_2 (Dropout)          (None, 100)               0
-#_________________________________________________________________
-dense_2 (Dense)              (None, 50)                5050
-#_________________________________________________________________
-activation_7 (Activation)    (None, 50)                0
-#_________________________________________________________________
-dense_3 (Dense)              (None, 10)                510
-#_________________________________________________________________
-activation_8 (Activation)    (None, 10)                0
-#_________________________________________________________________
-dense_4 (Dense)              (None, 1)                 11
-#_________________________________________________________________
+
 
 ####3. Creation of the Training Set & Training Process
 
@@ -148,7 +102,8 @@ To capture good driving behavior, I first recorded two laps on track one using c
 
 ![alt text][image2]
 
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
+I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to recover from  left side and right side back to center.
+These images show what a recovery looks like starting from ... :
 
 ![alt text][image3]
 ![alt text][image4]
@@ -166,6 +121,7 @@ Etc ....
 After the collection process, I had X number of data points. I then preprocessed this data by ...
 
 
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
+I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. 
+The ideal number of epochs was 3~5 as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
