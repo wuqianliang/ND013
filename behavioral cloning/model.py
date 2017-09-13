@@ -1,33 +1,44 @@
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Lambda, ELU, Activation
 from keras.layers.advanced_activations import LeakyReLU, PReLU
-from keras.layers.convolutional import Convolution2D
+from keras.layers.convolutional import Conv2D
 from keras.layers.normalization import BatchNormalization
 from keras.preprocessing.image import load_img, img_to_array
 from keras.callbacks import ModelCheckpoint
 from keras.models import Model
 import matplotlib.pyplot as plt
 from keras.layers import Cropping2D
+from keras.optimizers import SGD
+from keras.callbacks import LearningRateScheduler
 from sklearn.utils import shuffle
 import pandas as pd
 import numpy as np
 import csv
 import cv2
-import os
-
+import os,math
+from keras import regularizers
+from keras.utils import plot_model
+import keras
+from keras.layers import Dropout
 
 ch = 3
 row = 160
 col = 320
-BATCHSIZE=64
+BATCHSIZE=32
+EPOCH=1
 #width 320 height 160 channel 3
 
-
+sample_size=10000
 samples = []
+i=0
 with open('./driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
         samples.append(line)
+        i=i+1
+        if i > sample_size:
+            break
+
 
 from sklearn.model_selection import train_test_split
 train_samples, validation_samples = train_test_split(samples, test_size=0.2)
@@ -71,9 +82,17 @@ def generator(samples, batch_size=BATCHSIZE):
 train_generator = generator(train_samples, batch_size=BATCHSIZE)
 validation_generator = generator(validation_samples, batch_size=BATCHSIZE)
 
+def step_decay(epoch):
+    initial_lrate = 0.002
+    drop = 0.5
+    epochs_drop = 10.0
+    lrate = initial_lrate * math.pow(drop,math.floor((1+epoch)/epochs_drop))
+    return lrate
+lrate = LearningRateScheduler(step_decay)
+sgd = SGD(lr=0.002, momentum=0.9, decay=0.0, nesterov=False)
 
 
-def create_nvidia_model_1():
+def create_nvidia_model_2():
 
 	model = Sequential()
 	#data preprocess
@@ -81,26 +100,33 @@ def create_nvidia_model_1():
 	#cropping
 	model.add(Cropping2D(cropping=((70,25),(0,0))))
 
-	model.add(Convolution2D(24, 5, 5, subsample=(2, 2), border_mode="same", input_shape=(row, col, ch)))
+	model.add(Conv2D(24, 5, 5, subsample=(2, 2), border_mode="same", kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None), input_shape=(row, col, ch)))
 	model.add(Activation('relu'))
-	model.add(Convolution2D(36, 5, 5, subsample=(2, 2), border_mode="same"))
+	model.add(Conv2D(36, 5, 5, subsample=(2, 2), border_mode="same",kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 	model.add(Activation('relu'))
-	model.add(Convolution2D(48, 5, 5, subsample=(2, 2), border_mode="same"))
+	#model.add(Dropout(0.2))
+	model.add(Conv2D(48, 5, 5, subsample=(2, 2), border_mode="same",kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 	model.add(Activation('relu'))
-	model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
+	#model.add(Dropout(0.2))
+	model.add(Conv2D(64, 3, 3, subsample=(2, 2), border_mode="same",kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 	model.add(Activation('relu'))
-	model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
+	#model.add(Dropout(0.2))
+	model.add(Conv2D(64, 3, 3, W_regularizer=regularizers.l2(0.0001),subsample=(2, 2), border_mode="same",kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 	model.add(Flatten())
 	model.add(Activation('relu'))
-	model.add(Dense(100))
+	#model.add(Dropout(0.2))
+	model.add(Dense(100,kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None),kernel_regularizer=regularizers.l2(0.0001),activity_regularizer=regularizers.l1(0.0001)))
 	model.add(Activation('relu'))
-	model.add(Dense(50))
+	#model.add(Dropout(0.2))
+	model.add(Dense(50,kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 	model.add(Activation('relu'))
-	model.add(Dense(10))
+	#model.add(Dropout(0.2))
+	model.add(Dense(10,kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 	model.add(Activation('relu'))
-	model.add(Dense(1))
+	model.add(Dense(1,kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
 
-	model.compile(optimizer="adam", loss="mse")
+#	model.compile(optimizer="adam", loss="mse")
+	model.compile(optimizer=sgd, loss="mse")
 
 	print('Model is created and compiled..')
 	return model
@@ -108,12 +134,29 @@ def create_nvidia_model_1():
 if __name__ == "__main__":
 
 
-	_model= create_nvidia_model_1()
+	_model= create_nvidia_model_2()
+
+	print(_model.summary())
+	print(len(train_samples),BATCHSIZE)
 #	history_object = _model.fit_generator(train_generator, samples_per_epoch = len(train_samples), validation_data = validation_generator, nb_val_samples = len(validation_samples), nb_epoch=3)	
-	history_object = _model.fit_generator(train_generator, samples_per_epoch = len(train_samples), validation_data = validation_generator, nb_val_samples = len(validation_samples), nb_epoch=3, verbose=1)
+	history_object = _model.fit_generator(
+		train_generator, 
+		steps_per_epoch=len(train_samples)/BATCHSIZE,
+		epochs=EPOCH,
+		verbose=1,
+		callbacks=[lrate],
+		validation_data = validation_generator,
+		validation_steps=len(validation_samples)/BATCHSIZE,
+		max_queue_size=10,
+		samples_per_epoch = len(train_samples)
+		)
+
 	_model.save('./model.h5')
 	### print the keys contained in the history object
-#'''
+'''
+	with open('log_sgd_big_32.txt','w') as f:
+        f.write(str(history.history))
+
 	print(history_object.history.keys())
 	### plot the training and validation loss for each epoch
 	plt.plot(history_object.history['loss'])
@@ -123,4 +166,10 @@ if __name__ == "__main__":
 	plt.xlabel('epoch')
 	plt.legend(['training set', 'validation set'], loc='upper right')
 	plt.show()
-#'''
+'''
+
+
+
+
+# BatchNormalization
+# L2 
