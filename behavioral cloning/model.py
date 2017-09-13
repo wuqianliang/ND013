@@ -132,36 +132,38 @@ def create_nvidia_model_2():
 
 	model.add(Conv2D(24, 5, 5, subsample=(2, 2), border_mode="same", 
 		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None),
-		kernel_regularizer=regularizers.l2(0.01),
-		activity_regularizer=regularizers.l1(0.01),
+		kernel_regularizer=regularizers.l2(0.001),
+		activity_regularizer=regularizers.l1(0.001),
 		input_shape=(row, col, ch)))
 
 	model.add(Activation('relu'))
 
 	model.add(Conv2D(36, 5, 5, subsample=(2, 2), border_mode="same",
 		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None),
-		kernel_regularizer=regularizers.l2(0.01),
-		activity_regularizer=regularizers.l1(0.01)))
+		kernel_regularizer=regularizers.l2(0.001),
+		activity_regularizer=regularizers.l1(0.001)))
 
 	model.add(Activation('relu'))
 	model.add(Dropout(0.2))
 
 	model.add(Conv2D(48, 5, 5, subsample=(2, 2), border_mode="same",
 		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None),
-		kernel_regularizer=regularizers.l2(0.01),
-		activity_regularizer=regularizers.l1(0.01)))
+		kernel_regularizer=regularizers.l2(0.001),
+		activity_regularizer=regularizers.l1(0.001)))
 	model.add(Activation('relu'))
 	model.add(Dropout(0.2))
 	model.add(Conv2D(64, 3, 3, subsample=(2, 2), border_mode="same",
 		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None),
-		kernel_regularizer=regularizers.l2(0.01),
-		activity_regularizer=regularizers.l1(0.01)))
+		kernel_regularizer=regularizers.l2(0.001),
+		activity_regularizer=regularizers.l1(0.001)))
 
 	model.add(Activation('relu'))
 	model.add(Dropout(0.2))
 	model.add(Conv2D(64, 3, 3, 
 		subsample=(2, 2), border_mode="same",
-		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
+		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)
+		kernel_regularizer=regularizers.l2(0.001),
+		activity_regularizer=regularizers.l1(0.001)))
 	model.add(Flatten())
 	model.add(Activation('relu'))
 	model.add(Dropout(0.2))
