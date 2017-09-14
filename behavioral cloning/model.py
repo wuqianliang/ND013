@@ -21,32 +21,19 @@ from keras.callbacks import LearningRateScheduler
 from keras import regularizers
 from keras.utils import plot_model
 from sklearn.utils import shuffle
-
-
+from keras.models import load_model
+import h5py
+from keras import __version__ as keras_version
+from sklearn.model_selection import train_test_split
 
 # input image with 320 pixel width 160 pixel height and three color channels
 ch = 3
 row = 160
 col = 320
-BATCHSIZE=64
-
-
-#read data logs from csv file
-samples = []
-with open('./driving_log.csv') as csvfile:
-    reader = csv.reader(csvfile)
-    for line in reader:
-        samples.append(line)
-
-# split dataset to train and valid parts
-from sklearn.model_selection import train_test_split
-train_samples, validation_samples = train_test_split(samples, test_size=0.3)
-
-
-
+BATCHSIZE=32
 
 # use generator function to save menmory when prepare train or valid batchs of image
-def generator(samples, batch_size=BATCHSIZE):
+def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE):
     num_samples = len(samples)
     while 1: # Loop forever so the generator never terminates
         shuffle(samples)
@@ -56,7 +43,7 @@ def generator(samples, batch_size=BATCHSIZE):
             images = []
             angles = []
             for batch_sample in batch_samples:
-                name = './IMG/'+batch_sample[0].split('/')[-1]
+                name = impage_path+batch_sample[0].split('/')[-1]
                 center_image = cv2.imread(name)
                 center_angle = float(batch_sample[3])
                 images.append(center_image)
@@ -78,16 +65,6 @@ def generator(samples, batch_size=BATCHSIZE):
             yield sklearn.utils.shuffle(X_train, y_train)
 
 
-
-
-# the model use the generator function to make more memory-efficient
-
-#train data generator
-train_generator = generator(train_samples, batch_size=BATCHSIZE)
-
-#valid data generater
-validation_generator = generator(validation_samples, batch_size=BATCHSIZE)
-
 def create_nvidia_model_1():
 
 	model = Sequential()
@@ -99,19 +76,25 @@ def create_nvidia_model_1():
 
 	model.add(Conv2D(24, 5, 5, subsample=(2, 2), border_mode="same", input_shape=(row, col, ch)))
 	model.add(Activation('relu'))
+	model.add(Dropout(0.5))
 	model.add(Conv2D(36, 5, 5, subsample=(2, 2), border_mode="same"))
 	model.add(Activation('relu'))
+	model.add(Dropout(0.5))
 	model.add(Conv2D(48, 5, 5, subsample=(2, 2), border_mode="same"))
 	model.add(Activation('relu'))
+	model.add(Dropout(0.5))
 	model.add(Conv2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
 	model.add(Activation('relu'))
+	model.add(Dropout(0.5))
 	model.add(Conv2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
 	model.add(Flatten())
 	model.add(Activation('relu'))
 	model.add(Dense(100))
 	model.add(Activation('relu'))
+	model.add(Dropout(0.5))
 	model.add(Dense(50))
 	model.add(Activation('relu'))
+	model.add(Dropout(0.5))
 	model.add(Dense(10))
 	model.add(Activation('relu'))
 	model.add(Dense(1))
@@ -201,7 +184,32 @@ sgd = SGD(lr=0.002, momentum=0.9, decay=0.0, nesterov=False)
 
 if __name__ == "__main__":
 
-	_model= create_nvidia_model_2()
+	########################step 1 ################################
+	#
+	#  train new model
+	#
+	###############################################################
+	'''
+	#read data logs from csv file
+	samples = []
+	with open('./driving_log.csv') as csvfile:
+		reader = csv.reader(csvfile)
+		for line in reader:
+			samples.append(line)
+
+	# split dataset to train and valid parts
+	from sklearn.model_selection import train_test_split
+	train_samples, validation_samples = train_test_split(samples, test_size=0.3)
+
+	# the model use the generator function to make more memory-efficient
+
+	#train data generator
+	train_generator = generator(train_samples,impage_path='./IMG/',batch_size=BATCHSIZE)
+
+	#valid data generater
+	validation_generator = generator(validation_samples,impage_path='./IMG/',batch_size=BATCHSIZE)
+
+	_model= create_nvidia_model_1()
 	print(_model.summary())
 
 	print(len(train_samples),BATCHSIZE)
@@ -209,7 +217,57 @@ if __name__ == "__main__":
 	history_object = _model.fit_generator(
 		train_generator, 
 		steps_per_epoch=len(train_samples)/BATCHSIZE,
-		epochs=3,
+		epochs=20,
+		verbose=1,
+		validation_data = validation_generator,
+		validation_steps=len(validation_samples)/BATCHSIZE,
+		max_queue_size=10,
+		samples_per_epoch = len(train_samples)
+		)
+
+	_model.save('./model.h5')
+	'''
+	########################step 2 ################################
+	#
+	#  tuning model for some spots
+	#
+	###############################################################
+	
+    # check that model Keras version is same as local Keras version
+	f = h5py.File('./model.h5', mode='r')
+	model_version = f.attrs.get('keras_version')
+	keras_version = str(keras_version).encode('utf8')
+	f.close()
+	if model_version != keras_version:
+		print('You are using Keras version ', keras_version,
+              ', but the model was built using ', model_version)
+
+	_model = load_model('./model.h5.9.14')
+	_model.compile(optimizer=keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0), loss="mse")
+	samples = []
+	with open('./IMG_SPOT1/driving_log.csv') as csvfile:
+		reader = csv.reader(csvfile)
+		for line in reader:
+			samples.append(line)
+
+	# split dataset to train and valid parts
+
+	train_samples, validation_samples = train_test_split(samples, test_size=0.3)
+
+	# the model use the generator function to make more memory-efficient
+
+	#train data generator
+	train_generator = generator(train_samples,impage_path='./IMG_SPOT1/IMG/',batch_size=BATCHSIZE)
+
+	#valid data generater
+	validation_generator = generator(validation_samples,impage_path='./IMG_SPOT1/IMG/',batch_size=BATCHSIZE)
+
+	print(len(train_samples),BATCHSIZE)
+
+	history_object = _model.fit_generator(
+		train_generator, 
+		steps_per_epoch=len(train_samples)/BATCHSIZE,
+		epochs=4,
 		verbose=1,
 		validation_data = validation_generator,
 		validation_steps=len(validation_samples)/BATCHSIZE,
@@ -219,10 +277,7 @@ if __name__ == "__main__":
 
 	_model.save('./model.h5')
 
-	with open('log_adam_64.txt','w') as f:
-		f.write(str(history.history))
-
-'''
+	'''
 	### print the keys contained in the history object
 
 	history_object = _model.fit_generator(
@@ -247,4 +302,4 @@ if __name__ == "__main__":
 	plt.xlabel('epoch')
 	plt.legend(['training set', 'validation set'], loc='upper right')
 	plt.show()
-'''
+	'''
