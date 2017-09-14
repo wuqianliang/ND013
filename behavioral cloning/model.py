@@ -27,20 +27,20 @@ from keras import __version__ as keras_version
 from sklearn.model_selection import train_test_split
 
 # Work on GTX 1060 with memory 6G
-
+'''
 import tensorflow as tf
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = 0.7
 set_session(tf.Session(config=config))
-
+'''
 # input image with 320 pixel width 160 pixel height and three color channels
 ch = 3
 row = 160
 col = 320
 
-BATCHSIZE=32
+BATCHSIZE=16
 
 # use generator function to save menmory when prepare train or valid batchs of image
 def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE):
@@ -63,7 +63,6 @@ def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE):
 				# this is a parameter to tune
                 correction = 0.2 
 
-
 				# left camera
                 name = impage_path+batch_sample[1].split('/')[-1]
                 left_image = cv2.imread(name)
@@ -81,10 +80,10 @@ def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE):
 
 			# data augmentation to prevent data bias for the reason that in first track, car always tern left 
             augmented_images,augmented_measurements = [],[]
-            for _image,measurement in zip(images,angles):
+            for image,measurement in zip(images,angles):
 
 				# resize image down by scale facter 0.5
-                image = _image # cv2.resize(_image,(col,row))
+                #image = _image # cv2.resize(_image,(col,row))
                 augmented_images.append(image)
                 augmented_measurements.append(measurement)
 				# flip images and take the opposite sign of the steering measurement to help with the left turn bias
