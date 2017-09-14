@@ -26,10 +26,20 @@ import h5py
 from keras import __version__ as keras_version
 from sklearn.model_selection import train_test_split
 
+# Work on GTX 1060 with memory 6G
+
+import tensorflow as tf
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+from keras.backend.tensorflow_backend import set_session
+config = tf.ConfigProto()
+config.gpu_options.per_process_gpu_memory_fraction = 0.7
+set_session(tf.Session(config=config))
+
 # input image with 320 pixel width 160 pixel height and three color channels
 ch = 3
 row = 160
 col = 320
+
 BATCHSIZE=32
 
 # use generator function to save menmory when prepare train or valid batchs of image
@@ -43,15 +53,38 @@ def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE):
             images = []
             angles = []
             for batch_sample in batch_samples:
+				# center camera
                 name = impage_path+batch_sample[0].split('/')[-1]
                 center_image = cv2.imread(name)
                 center_angle = float(batch_sample[3])
                 images.append(center_image)
                 angles.append(center_angle)
 
-			#data augmentation to prevent data bias for the reason that in first track, car always tern left 
+				# this is a parameter to tune
+                correction = 0.2 
+
+
+				# left camera
+                name = impage_path+batch_sample[1].split('/')[-1]
+                left_image = cv2.imread(name)
+                left_angle = float(batch_sample[3]) + float(correction)
+                images.append(left_image)
+                angles.append(left_angle)
+
+				# right camera
+                name = impage_path+batch_sample[2].split('/')[-1]
+                right_image = cv2.imread(name)
+                right_angle = float(batch_sample[3]) - float(correction)
+                images.append(right_image)
+                angles.append(right_angle)
+
+
+			# data augmentation to prevent data bias for the reason that in first track, car always tern left 
             augmented_images,augmented_measurements = [],[]
-            for image,measurement in zip(images,angles):
+            for _image,measurement in zip(images,angles):
+
+				# resize image down by scale facter 0.5
+                image = _image # cv2.resize(_image,(col,row))
                 augmented_images.append(image)
                 augmented_measurements.append(measurement)
 				# flip images and take the opposite sign of the steering measurement to help with the left turn bias
@@ -68,7 +101,7 @@ def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE):
 def create_nvidia_model_1():
 
 	model = Sequential()
-	#normalize the image data
+	# normalize the image data
 	model.add(Lambda(lambda x: x/255.0 - 0.5,input_shape=(row, col, ch),output_shape=(row, col, ch)))
 
 	# crop each image to focus on only the portion of the image that contains road section
@@ -108,10 +141,10 @@ def create_nvidia_model_2():
 
 	model = Sequential()
 
-	#data preprocess
+	# data preprocess
 	model.add(Lambda(lambda x: x/255.0 - 0.5,input_shape=(row, col, ch),output_shape=(row, col, ch)))
 
-	#cropping
+	# cropping
 	model.add(Cropping2D(cropping=((70,25),(0,0))))
 
 	model.add(Conv2D(24, 5, 5, subsample=(2, 2), border_mode="same", 
@@ -189,7 +222,7 @@ if __name__ == "__main__":
 	#  train new model
 	#
 	###############################################################
-	'''
+
 	#read data logs from csv file
 	samples = []
 	with open('./driving_log.csv') as csvfile:
@@ -217,7 +250,7 @@ if __name__ == "__main__":
 	history_object = _model.fit_generator(
 		train_generator, 
 		steps_per_epoch=len(train_samples)/BATCHSIZE,
-		epochs=20,
+		epochs=4,
 		verbose=1,
 		validation_data = validation_generator,
 		validation_steps=len(validation_samples)/BATCHSIZE,
@@ -226,13 +259,13 @@ if __name__ == "__main__":
 		)
 
 	_model.save('./model.h5')
-	'''
+
 	########################step 2 ################################
 	#
 	#  tuning model for some spots
 	#
 	###############################################################
-	
+	'''
     # check that model Keras version is same as local Keras version
 	f = h5py.File('./model.h5', mode='r')
 	model_version = f.attrs.get('keras_version')
@@ -251,11 +284,9 @@ if __name__ == "__main__":
 			samples.append(line)
 
 	# split dataset to train and valid parts
-
 	train_samples, validation_samples = train_test_split(samples, test_size=0.3)
 
 	# the model use the generator function to make more memory-efficient
-
 	#train data generator
 	train_generator = generator(train_samples,impage_path='./IMG_SPOT1/IMG/',batch_size=BATCHSIZE)
 
@@ -276,7 +307,7 @@ if __name__ == "__main__":
 		)
 
 	_model.save('./model.h5')
-
+'''
 	'''
 	### print the keys contained in the history object
 
