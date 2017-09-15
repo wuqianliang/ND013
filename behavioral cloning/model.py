@@ -16,10 +16,6 @@ from keras.callbacks import ModelCheckpoint
 from keras.models import Model
 from keras.layers import Dropout
 from keras.layers import Cropping2D
-from keras.optimizers import SGD
-from keras.callbacks import LearningRateScheduler
-from keras import regularizers
-from keras.utils import plot_model
 from sklearn.utils import shuffle
 from keras.models import load_model
 import h5py
@@ -61,22 +57,21 @@ def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE, step_finetune
                 images.append(center_image)
                 angles.append(center_angle)
                 if step_finetune:
-					# this is a parameter to tune
-					correction = 0.1
+                    correction = 0.1 # this is a parameter to tune
 
-					# left camera
-					name = impage_path+batch_sample[1].split('/')[-1]
-					left_image = cv2.imread(name)
-					left_angle = float(batch_sample[3]) + float(correction)
-					images.append(left_image)
-					angles.append(left_angle)
+                    # left camera
+                    name = impage_path+batch_sample[1].split('/')[-1]
+                    left_image = cv2.imread(name)
+                    left_angle = float(batch_sample[3]) + float(correction)
+                    images.append(left_image)
+                    angles.append(left_angle)
 
-					# right camera
-					name = impage_path+batch_sample[2].split('/')[-1]
-					right_image = cv2.imread(name)
-					right_angle = float(batch_sample[3]) - float(correction)
-					images.append(right_image)
-					angles.append(right_angle)
+                    # right camera
+                    name = impage_path+batch_sample[2].split('/')[-1]
+                    right_image = cv2.imread(name)
+                    right_angle = float(batch_sample[3]) - float(correction)
+                    images.append(right_image)
+                    angles.append(right_angle)
                 
 
 			# data augmentation to prevent data bias for the reason that in first track, car always tern left 
