@@ -59,9 +59,9 @@ def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE):
                 center_angle = float(batch_sample[3])
                 images.append(center_image)
                 angles.append(center_angle)
-
+                
 				# this is a parameter to tune
-                correction = 0.2 
+                correction = 0.1
 
 				# left camera
                 name = impage_path+batch_sample[1].split('/')[-1]
@@ -76,7 +76,7 @@ def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE):
                 right_angle = float(batch_sample[3]) - float(correction)
                 images.append(right_image)
                 angles.append(right_angle)
-
+                
 
 			# data augmentation to prevent data bias for the reason that in first track, car always tern left 
             augmented_images,augmented_measurements = [],[]
@@ -221,7 +221,7 @@ if __name__ == "__main__":
 	#  train new model
 	#
 	###############################################################
-
+	'''
 	#read data logs from csv file
 	samples = []
 	with open('./driving_log.csv') as csvfile:
@@ -258,13 +258,13 @@ if __name__ == "__main__":
 		)
 
 	_model.save('./model.h5')
-
+	'''
 	########################step 2 ################################
 	#
 	#  tuning model for some spots
 	#
 	###############################################################
-	'''
+	
     # check that model Keras version is same as local Keras version
 	f = h5py.File('./model.h5', mode='r')
 	model_version = f.attrs.get('keras_version')
@@ -274,7 +274,7 @@ if __name__ == "__main__":
 		print('You are using Keras version ', keras_version,
               ', but the model was built using ', model_version)
 
-	_model = load_model('./model.h5.9.14')
+	_model = load_model('./model.h5')
 	_model.compile(optimizer=keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0), loss="mse")
 	samples = []
 	with open('./IMG_SPOT1/driving_log.csv') as csvfile:
@@ -306,7 +306,7 @@ if __name__ == "__main__":
 		)
 
 	_model.save('./model.h5')
-'''
+
 	'''
 	### print the keys contained in the history object
 
