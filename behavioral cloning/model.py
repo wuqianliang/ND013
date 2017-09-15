@@ -22,6 +22,7 @@ import h5py
 from keras import __version__ as keras_version
 from sklearn.model_selection import train_test_split
 
+
 # Work on GTX 1060 with memory 6G
 '''
 import tensorflow as tf
@@ -158,8 +159,8 @@ if __name__ == "__main__":
 	validation_generator = generator(validation_samples,impage_path='./IMG/',batch_size=BATCHSIZE)
 
 	_model= create_nvidia_model_1()
-	print(_model.summary())
 
+	print(_model.summary())
 	print(len(train_samples),BATCHSIZE)
 
 	history_object = _model.fit_generator(
@@ -193,7 +194,7 @@ if __name__ == "__main__":
 	_model = load_model('./model.h5')
 	_model.compile(optimizer=keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0), loss="mse")
 	samples = []
-	with open('./IMG_SPOT1/driving_log.csv') as csvfile:
+	with open('./IMG_FINETUNE/driving_log.csv') as csvfile:
 		reader = csv.reader(csvfile)
 		for line in reader:
 			samples.append(line)
@@ -203,10 +204,10 @@ if __name__ == "__main__":
 
 	# the model use the generator function to make more memory-efficient
 	#train data generator
-	train_generator = generator(train_samples,impage_path='./IMG_SPOT1/IMG/',batch_size=BATCHSIZE, step_finetune = True)
+	train_generator = generator(train_samples,impage_path='./IMG_FINETUNE/IMG/',batch_size=BATCHSIZE, step_finetune = True)
 
 	#valid data generater
-	validation_generator = generator(validation_samples,impage_path='./IMG_SPOT1/IMG/',batch_size=BATCHSIZE, step_finetune = True)
+	validation_generator = generator(validation_samples,impage_path='./IMG_FINETUNE/IMG/',batch_size=BATCHSIZE, step_finetune = True)
 
 	print(len(train_samples),BATCHSIZE)
 
