@@ -23,7 +23,7 @@ from keras import __version__ as keras_version
 from sklearn.model_selection import train_test_split
 
 
-# Work on GTX 1060 with memory 6G
+# Work on GTX 1060 with memory 6G,here is config when GPU memory is not sufficient
 '''
 import tensorflow as tf
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
@@ -57,6 +57,9 @@ def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE, step_finetune
                 center_angle = float(batch_sample[3])
                 images.append(center_image)
                 angles.append(center_angle)
+
+				# ticky here 
+				# only finetune step use the left and right camera images here according my experiments 
                 if step_finetune:
                     correction = 0.1 # this is a parameter to tune
 
@@ -94,7 +97,7 @@ def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE, step_finetune
             yield sklearn.utils.shuffle(X_train, y_train)
 
 
-def create_nvidia_model_1():
+def create_nvidia_model():
 
 	model = Sequential()
 	# normalize the image data
@@ -105,6 +108,8 @@ def create_nvidia_model_1():
 
 	model.add(Conv2D(24, 5, 5, subsample=(2, 2), border_mode="same", input_shape=(row, col, ch)))
 	model.add(Activation('relu'))
+
+	# use dropout to avoid overfitting
 	model.add(Dropout(0.5))
 	model.add(Conv2D(36, 5, 5, subsample=(2, 2), border_mode="same"))
 	model.add(Activation('relu'))
@@ -127,7 +132,7 @@ def create_nvidia_model_1():
 	model.add(Dense(10))
 	model.add(Activation('relu'))
 	model.add(Dense(1))
-
+	# Adam optimizer is used
 	model.compile(optimizer="adam", loss="mse")
 
 	print('Model is created and compiled..')
@@ -137,7 +142,7 @@ if __name__ == "__main__":
 
 	########################step 1 ################################
 	#
-	#  train new model
+	#  train new model use dataset provided by udacity to learn keeping the car on the track
 	#
 	###############################################################
 	
@@ -158,7 +163,7 @@ if __name__ == "__main__":
 	#valid data generater
 	validation_generator = generator(validation_samples,impage_path='./IMG/',batch_size=BATCHSIZE)
 
-	_model= create_nvidia_model_1()
+	_model= create_nvidia_model()
 
 	print(_model.summary())
 	print(len(train_samples),BATCHSIZE)
@@ -192,7 +197,10 @@ if __name__ == "__main__":
               ', but the model was built using ', model_version)
 
 	_model = load_model('./model.h5')
+
+	# here use a small learning rate for not break the initial model parameters obtained by step 1 and only finetune
 	_model.compile(optimizer=keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0), loss="mse")
+
 	samples = []
 	with open('./IMG_FINETUNE/driving_log.csv') as csvfile:
 		reader = csv.reader(csvfile)
