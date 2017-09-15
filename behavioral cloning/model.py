@@ -32,9 +32,10 @@ import tensorflow as tf
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction = 0.7
+config.gpu_options.per_process_gpu_memory_fraction = 0.3
 set_session(tf.Session(config=config))
 '''
+
 # input image with 320 pixel width 160 pixel height and three color channels
 ch = 3
 row = 160
@@ -43,7 +44,7 @@ col = 320
 BATCHSIZE=16
 
 # use generator function to save menmory when prepare train or valid batchs of image
-def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE):
+def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE, step_finetune = False):
     num_samples = len(samples)
     while 1: # Loop forever so the generator never terminates
         shuffle(samples)
@@ -59,23 +60,23 @@ def generator(samples, impage_path='./IMG/' ,batch_size=BATCHSIZE):
                 center_angle = float(batch_sample[3])
                 images.append(center_image)
                 angles.append(center_angle)
-                
-				# this is a parameter to tune
-                correction = 0.1
+                if step_finetune:
+					# this is a parameter to tune
+					correction = 0.1
 
-				# left camera
-                name = impage_path+batch_sample[1].split('/')[-1]
-                left_image = cv2.imread(name)
-                left_angle = float(batch_sample[3]) + float(correction)
-                images.append(left_image)
-                angles.append(left_angle)
+					# left camera
+					name = impage_path+batch_sample[1].split('/')[-1]
+					left_image = cv2.imread(name)
+					left_angle = float(batch_sample[3]) + float(correction)
+					images.append(left_image)
+					angles.append(left_angle)
 
-				# right camera
-                name = impage_path+batch_sample[2].split('/')[-1]
-                right_image = cv2.imread(name)
-                right_angle = float(batch_sample[3]) - float(correction)
-                images.append(right_image)
-                angles.append(right_angle)
+					# right camera
+					name = impage_path+batch_sample[2].split('/')[-1]
+					right_image = cv2.imread(name)
+					right_angle = float(batch_sample[3]) - float(correction)
+					images.append(right_image)
+					angles.append(right_angle)
                 
 
 			# data augmentation to prevent data bias for the reason that in first track, car always tern left 
@@ -136,84 +137,6 @@ def create_nvidia_model_1():
 	print('Model is created and compiled..')
 	return model
 
-def create_nvidia_model_2():
-
-	model = Sequential()
-
-	# data preprocess
-	model.add(Lambda(lambda x: x/255.0 - 0.5,input_shape=(row, col, ch),output_shape=(row, col, ch)))
-
-	# cropping
-	model.add(Cropping2D(cropping=((70,25),(0,0))))
-
-	model.add(Conv2D(24, 5, 5, subsample=(2, 2), border_mode="same", 
-		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None),
-		kernel_regularizer=regularizers.l2(0.001),
-		activity_regularizer=regularizers.l1(0.001),
-		input_shape=(row, col, ch)))
-
-	model.add(Activation('relu'))
-
-	model.add(Conv2D(36, 5, 5, subsample=(2, 2), border_mode="same",
-		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None),
-		kernel_regularizer=regularizers.l2(0.001),
-		activity_regularizer=regularizers.l1(0.001)))
-
-	model.add(Activation('relu'))
-	model.add(Dropout(0.2))
-
-	model.add(Conv2D(48, 5, 5, subsample=(2, 2), border_mode="same",
-		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None),
-		kernel_regularizer=regularizers.l2(0.001),
-		activity_regularizer=regularizers.l1(0.001)))
-	model.add(Activation('relu'))
-	model.add(Dropout(0.2))
-	model.add(Conv2D(64, 3, 3, subsample=(2, 2), border_mode="same",
-		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None),
-		kernel_regularizer=regularizers.l2(0.001),
-		activity_regularizer=regularizers.l1(0.001)))
-
-	model.add(Activation('relu'))
-	model.add(Dropout(0.2))
-	model.add(Conv2D(64, 3, 3, 
-		subsample=(2, 2), border_mode="same",
-		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None),
-		kernel_regularizer=regularizers.l2(0.001),
-		activity_regularizer=regularizers.l1(0.001)))
-	model.add(Flatten())
-	model.add(Activation('relu'))
-	model.add(Dropout(0.2))
-	model.add(
-		Dense(100,
-		kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None),
-		kernel_regularizer=regularizers.l2(0.001),
-		activity_regularizer=regularizers.l1(0.001)))
-	model.add(Activation('relu'))
-	model.add(Dropout(0.2))
-	model.add(Dense(50,kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
-	model.add(Activation('relu'))
-	model.add(Dropout(0.2))
-	model.add(Dense(10,kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
-	model.add(Activation('relu'))
-	model.add(Dense(1,kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.1, seed=None)))
-
-	model.compile(optimizer="adam", loss="mse")
-#	model.compile(optimizer=keras.optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004), loss="mse")
-
-	print('Model is created and compiled..')
-	return model
-
-'''
-def step_decay(epoch):
-    initial_lrate = 0.002
-    drop = 0.5
-    epochs_drop = 10.0
-    lrate = initial_lrate * math.pow(drop,math.floor((1+epoch)/epochs_drop))
-    return lrate
-lrate = LearningRateScheduler(step_decay)
-sgd = SGD(lr=0.002, momentum=0.9, decay=0.0, nesterov=False)
-'''
-
 if __name__ == "__main__":
 
 	########################step 1 ################################
@@ -221,7 +144,7 @@ if __name__ == "__main__":
 	#  train new model
 	#
 	###############################################################
-	'''
+	
 	#read data logs from csv file
 	samples = []
 	with open('./driving_log.csv') as csvfile:
@@ -230,11 +153,9 @@ if __name__ == "__main__":
 			samples.append(line)
 
 	# split dataset to train and valid parts
-	from sklearn.model_selection import train_test_split
 	train_samples, validation_samples = train_test_split(samples, test_size=0.3)
 
 	# the model use the generator function to make more memory-efficient
-
 	#train data generator
 	train_generator = generator(train_samples,impage_path='./IMG/',batch_size=BATCHSIZE)
 
@@ -258,13 +179,13 @@ if __name__ == "__main__":
 		)
 
 	_model.save('./model.h5')
-	'''
+	
 	########################step 2 ################################
 	#
-	#  tuning model for some spots
+	#  finetuning model for some spots where there is sharp turn 
 	#
 	###############################################################
-	
+
     # check that model Keras version is same as local Keras version
 	f = h5py.File('./model.h5', mode='r')
 	model_version = f.attrs.get('keras_version')
@@ -287,17 +208,17 @@ if __name__ == "__main__":
 
 	# the model use the generator function to make more memory-efficient
 	#train data generator
-	train_generator = generator(train_samples,impage_path='./IMG_SPOT1/IMG/',batch_size=BATCHSIZE)
+	train_generator = generator(train_samples,impage_path='./IMG_SPOT1/IMG/',batch_size=BATCHSIZE, step_finetune = True)
 
 	#valid data generater
-	validation_generator = generator(validation_samples,impage_path='./IMG_SPOT1/IMG/',batch_size=BATCHSIZE)
+	validation_generator = generator(validation_samples,impage_path='./IMG_SPOT1/IMG/',batch_size=BATCHSIZE, step_finetune = True)
 
 	print(len(train_samples),BATCHSIZE)
 
 	history_object = _model.fit_generator(
 		train_generator, 
 		steps_per_epoch=len(train_samples)/BATCHSIZE,
-		epochs=4,
+		epochs=8,
 		verbose=1,
 		validation_data = validation_generator,
 		validation_steps=len(validation_samples)/BATCHSIZE,
@@ -306,30 +227,3 @@ if __name__ == "__main__":
 		)
 
 	_model.save('./model.h5')
-
-	'''
-	### print the keys contained in the history object
-
-	history_object = _model.fit_generator(
-		train_generator, 
-		steps_per_epoch=len(train_samples)/BATCHSIZE,
-		epochs=3,
-		verbose=1,
-		callbacks=[lrate],
-		validation_data = validation_generator,
-		validation_steps=len(validation_samples)/BATCHSIZE,
-		max_queue_size=10,
-		samples_per_epoch = len(train_samples)
-		)
-
-
-	print(history_object.history.keys())
-	### plot the training and validation loss for each epoch
-	plt.plot(history_object.history['loss'])
-	plt.plot(history_object.history['val_loss'])
-	plt.title('model mean squared error loss')
-	plt.ylabel('mean squared error loss')
-	plt.xlabel('epoch')
-	plt.legend(['training set', 'validation set'], loc='upper right')
-	plt.show()
-	'''
