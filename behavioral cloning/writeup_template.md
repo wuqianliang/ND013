@@ -109,8 +109,8 @@ To capture good driving behavior, I use the sample data [Sample Training Data](h
 I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to recover from  left side and right side back to center.
 These images show what a recovery looks like starting from :
 
-![recover from left](./examples/left side.jpg)
-![recover from right](./examples/right side.jpg)
+![recover from left](./examples/leftside.jpg)
+![recover from right](./examples/rightside.jpg)
 
 To augment the data sat, I also flipped images and angles thinking that this would lower the turn left bias. For example, here is an image that has then been flipped:
 
@@ -120,6 +120,6 @@ After the collection process, I had 18726 number of data points(showed in IMG_FI
 
 I finally randomly shuffled the data set and put 30% of the data into a validation set. 
 
-I used this training data for training the model. The validation set loss seems lower by each epoch step which determine the model was successfully trained. 
+I used this training data for training the model. The validation set loss seems lower by each epoch step which means the model was successfully trained. 
 
 The ideal number of epochs when train initial model wae 4 enough because after training ,model has a good performence. When in finetune step the ideal number of epochs was 8 because the learning rate was set very slow (0.0001) which result a good mode parameters.
