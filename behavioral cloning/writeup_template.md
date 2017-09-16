@@ -115,7 +115,7 @@ These images show what a recovery looks like starting from :
 
 To augment the data sat, I also flipped images and angles thinking that this would lower the turn left bias. For example, here is an image that has then been flipped:
 
-![fliped](./examples/fliped.jpg)
+![flipped](./examples/flipped.jpg)
 
 After the collection process, I had 18726 number of data points(showed in IMG_FINETUNE.mp4) for tuning model.
 
