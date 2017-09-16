@@ -116,7 +116,7 @@ To augment the data sat, I also flipped images and angles thinking that this wou
 
 ![fliped][image6](./examples/flipped.jpg)
 
-After the collection process, I had 18726 number of data points for tuning model.
+After the collection process, I had 18726 number of data points(showed in IMG_FINETUNE.mp4) for tuning model.
 
 I finally randomly shuffled the data set and put 30% of the data into a validation set. 
 
