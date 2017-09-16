@@ -102,19 +102,19 @@ Here is a visualization of the architecture:
 
 ####3. Creation of the Training Set & Training Process
 
-To capture good driving behavior, I use the sample data [rubric points](https://d17h27t6h515a5.cloudfront.net/topher/2016/December/584f6edd_data/data.zip) of center lane driving. Here is an example image of center lane driving:
+To capture good driving behavior, I use the sample data [Sample Training Data](https://d17h27t6h515a5.cloudfront.net/topher/2016/December/584f6edd_data/data.zip) of center lane driving. Here is an example image of center lane driving:
 
 ![image3](./examples/center_2016_12_01_13_30_48_287.jpg)
 
 I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to recover from  left side and right side back to center.
 These images show what a recovery looks like starting from :
 
-![recover from left][image4](./examples/left side.jpg)
-![recover from right][image5](./examples/right side.jpg)
+![recover from left](./examples/left side.jpg)
+![recover from right](./examples/right side.jpg)
 
 To augment the data sat, I also flipped images and angles thinking that this would lower the turn left bias. For example, here is an image that has then been flipped:
 
-![fliped][image6](./examples/flipped.jpg)
+![fliped](./examples/flipped.jpg)
 
 After the collection process, I had 18726 number of data points(showed in IMG_FINETUNE.mp4) for tuning model.
 
