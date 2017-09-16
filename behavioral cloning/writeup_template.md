@@ -96,8 +96,8 @@ The final model architecture (model.py lines 109-123) consisted of a convolution
 
 Here is a visualization of the architecture:
 
-[image1]: ./examples/model_architecture_part_1.PNG 
-[image2]: ./examples/model_architecture_part_2.PNG
+![image1](./examples/model_architecture_part_1.PNG) 
+![image2](./examples/model_architecture_part_2.PNG)
 
 ####3. Creation of the Training Set & Training Process
 
