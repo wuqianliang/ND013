@@ -86,7 +86,9 @@ I found that my first model had a low mean squared error  on both the training s
 
 This implied that the model was smart to learn the driving behavior, but there were a few spots where the vehicle fell off the track especially where there is sharp turn. 
 
-To improve the driving behavior in these bad cases, I record new data (images in IMG_FINETUNE.mp4) to add to train dataset. The images in IMG_FINETUNE.mp4 contains the opearations which recover car from left or right side of road back to center.
+To improve the driving behavior in these bad cases, I record new data (images in IMG_FINETUNE.mp4) to add to train dataset. 
+
+The images in IMG_FINETUNE.mp4 contains the opearations which recover car from left or right side of road back to center.
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
