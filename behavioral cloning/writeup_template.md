@@ -100,13 +100,14 @@ Here is a visualization of the architecture:
 
 ![image2](./examples/model_architecture_part_2.PNG)
 
-####3. Creation of the Training Set & Training Process
+#### 3. Creation of the Training Set & Training Process
 
 To capture good driving behavior, I use the sample data [Sample Training Data](https://d17h27t6h515a5.cloudfront.net/topher/2016/December/584f6edd_data/data.zip) of center lane driving. Here is an example image of center lane driving:
 
 ![image3](./examples/center_2016_12_01_13_30_48_287.jpg)
 
 I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to recover from  left side and right side back to center.
+
 These images show what a recovery looks like starting from :
 
 ![recover from left](./examples/leftside.jpg)
@@ -122,4 +123,4 @@ I finally randomly shuffled the data set and put 30% of the data into a validati
 
 I used this training data for training the model. The validation set loss seems lower by each epoch step which means the model was successfully trained. 
 
-The ideal number of epochs when train initial model wae 4 enough because after training ,model has a good performence. When in finetune step the ideal number of epochs was 8 because the learning rate was set very slow (0.0001) which result a good mode parameters.
+The ideal number of epochs when train initial model wae 4 enough because after training ,model has a good performence. when in finetune step the ideal number of epochs was 8 because the learning rate was set very slow (0.0001) which result a good mode parameters.
