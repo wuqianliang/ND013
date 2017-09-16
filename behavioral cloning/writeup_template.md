@@ -102,30 +102,24 @@ Here is a visualization of the architecture:
 
 ####3. Creation of the Training Set & Training Process
 
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
+To capture good driving behavior, I use the sample data [rubric points](https://d17h27t6h515a5.cloudfront.net/topher/2016/December/584f6edd_data/data.zip) of center lane driving. Here is an example image of center lane driving:
 
-![alt text][image2]
+![center lane driving][image3](./examples/center_2016_12_01_13_30_48_287.jpg)
 
 I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to recover from  left side and right side back to center.
-These images show what a recovery looks like starting from ... :
+These images show what a recovery looks like starting from :
 
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
+![recover from left][image4](./examples/left side.jpg)
+![recover from right][image5](./examples/right side.jpg)
 
-Then I repeated this process on track two in order to get more data points.
+To augment the data sat, I also flipped images and angles thinking that this would lower the turn left bias. For example, here is an image that has then been flipped:
 
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
+![fliped][image6](./examples/flipped.jpg)
 
-![alt text][image6]
-![alt text][image7]
+After the collection process, I had 18726 number of data points for tuning model.
 
-Etc ....
+I finally randomly shuffled the data set and put 30% of the data into a validation set. 
 
-After the collection process, I had X number of data points. I then preprocessed this data by ...
+I used this training data for training the model. The validation set loss seems lower by each epoch step which determine the model was successfully trained. 
 
-
-I finally randomly shuffled the data set and put 20% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. 
-The ideal number of epochs was 3~5 as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+The ideal number of epochs when train initial model wae 4 enough because after training ,model has a good performence. When in finetune step the ideal number of epochs was 8 because the learning rate was set very slow (0.0001) which result a good mode parameters.
