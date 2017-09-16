@@ -1,8 +1,6 @@
 # **Behavioral Cloning** 
 ---
-| xxxxxxx | ccccccc| 
-| : ----- | : -----|
-| ccccccc | vvvvvv |
+
 **Behavioral Cloning Project**
 
 The goals / steps of this project are the following:
