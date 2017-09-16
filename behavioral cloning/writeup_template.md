@@ -123,4 +123,4 @@ I finally randomly shuffled the data set and put 30% of the data into a validati
 
 I used this training data for training the model. The validation set loss seems lower by each epoch step which means the model was successfully trained. 
 
-The ideal number of epochs when train initial model wae 4 enough because after training ,model has a good performence. when in finetune step the ideal number of epochs was 8 because the learning rate was set very slow (0.0001) which result a low validate loss.
+The ideal number of epochs when train initial model wae 4 enough because after training ,model has a good performence. when in finetune step the ideal number of epochs was 8 because the learning rate was set very slow (0.0001) which result a low validate data loss.
