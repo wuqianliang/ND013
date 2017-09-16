@@ -104,7 +104,7 @@ Here is a visualization of the architecture:
 
 To capture good driving behavior, I use the sample data [rubric points](https://d17h27t6h515a5.cloudfront.net/topher/2016/December/584f6edd_data/data.zip) of center lane driving. Here is an example image of center lane driving:
 
-![center lane driving][image3](./examples/center_2016_12_01_13_30_48_287.jpg)
+![image3](./examples/center_2016_12_01_13_30_48_287.jpg)
 
 I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to recover from  left side and right side back to center.
 These images show what a recovery looks like starting from :
