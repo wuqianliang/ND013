@@ -224,7 +224,7 @@ class Line():
 
     def init_lane_finder(self, binary_warped):
 
-		# Bottom half region of image  and 0 channel
+		# Bottom half region of image  of 0 channel
         histogram = np.sum(binary_warped[binary_warped.shape[0] // 2:, :, 0], axis=0)
 
         # get midpoint of the histogram i.e half of width
