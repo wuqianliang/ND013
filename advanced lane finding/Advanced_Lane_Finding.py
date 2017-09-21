@@ -467,8 +467,8 @@ if __name__ == '__main__':
     from moviepy.editor import VideoFileClip
 
     line = Line()
-    output_file = './processed_project_video.mp4'
-    input_file = './project_video.mp4'
+    output_file = './processed_harder_challenge_video.mp4'
+    input_file = './harder_challenge_video.mp4'
     clip = VideoFileClip(input_file)
     out_clip = clip.fl_image(line.image_process_pipeline)
     out_clip.write_videofile(output_file, audio=False)
