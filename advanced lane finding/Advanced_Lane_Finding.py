@@ -4,6 +4,7 @@ import pickle
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 # store camera calibration parameters in ./camera_cal/calibrated_data.p
 CALIBRATED_DATA_FILE = './camera_cal/calibrated_data.p'
@@ -25,7 +26,7 @@ class CameraCalibrator:
 
         self.calibrated_data = {}
         if not init_coef:
-            self.calibrate()
+            self.calibrate_via_chessboards()
 
         self.coef_loaded = False
 
@@ -43,8 +44,8 @@ class CameraCalibrator:
                 self.image_points.append(corners)
 
 				# Draw and display the corners
-                cv2.drawChessboardCorners(gray_image, (9,6), corners, ret)
-                self.chessboards.append(gray_image)
+                #cv2.drawChessboardCorners(gray_image, (9,6), corners, ret)
+                #self.chessboards.append(gray_image)
 
         h, w = image.shape[:2]
         ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(self.object_points, self.image_points, (w, h), None, None)
@@ -52,15 +53,15 @@ class CameraCalibrator:
         self.calibrated_data = {'mtx': mtx, 'dist': dist}
 
         with open(CALIBRATED_DATA_FILE, 'wb') as f:
-            pickle.dump(calibrated_data, file=f)
+            pickle.dump(self.calibrated_data, file=f)
 		
         self.coef_loaded = True
 
     def undistort(self, image):
 
         if not os.path.exists(CALIBRATED_DATA_FILE):
-            raise Exception('Camera calibration data file does not exist at ' +
-                            CALIBRATED_DATA_FILE)
+            raise Exception('Camera calibration data file does not exist at ' + CALIBRATED_DATA_FILE)
+
         if not self.coef_loaded:
 
             with open(CALIBRATED_DATA_FILE, 'rb') as fname:
@@ -92,17 +93,9 @@ class Perspective_Transformer:
 
 
 def noise_reduction(image, threshold=4):
-    """
-    This method is used to reduce the noise of binary images.
 
-    :param image:
-        binary image (0 or 1)
+    # This method is used to reduce the noise of binary images.
 
-    :param threshold:
-        min number of neighbours with value
-
-    :return:
-    """
     k = np.array([[1, 1, 1],
                   [1, 0, 1],
                   [1, 1, 1]])
@@ -110,56 +103,10 @@ def noise_reduction(image, threshold=4):
     image[nb_neighbours < threshold] = 0
     return image
 
-
-
 def binary_threshold_filter(channel, thresh = (200, 255), on = 1):
     binary = np.zeros_like(channel)
     binary[(channel > thresh[0]) & (channel <= thresh[1])] = on
     return binary
-
-def binary_filter_road_pavement(img):
-    
-    img_hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
-    
-    # create dimensions for roi boxes - center, and left & right half height
-    width=img.shape[1]
-    height=img.shape[0]
-    x_center=np.int(width/2)
-    roi_width=100
-    roi_height=200
-    x_left=x_center-np.int(roi_width/2)
-    x_right=x_center+np.int(roi_width/2)
-    y_top=height-30
-    y_bottom=y_top-roi_height
-    y_bottom_small=y_top-np.int(roi_height/2)
-    x_offset=50
-    x_finish=width-x_offset
-    
-    # extract the roi and stack before converting to HSV
-    roi_center=img[y_bottom:y_top, x_left:x_right]
-    roi_left=img[y_bottom_small:y_top, x_offset:roi_width+x_offset]
-    roi_right=img[y_bottom_small:y_top, x_finish-roi_width:x_finish]
-    roi=np.hstack((roi_center,np.vstack((roi_left,roi_right))))
-    roi_hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
-    
-        # calculating object histogram
-    roihist = cv2.calcHist([roi_hsv],[0, 1], None, [256, 256], [0, 256, 0, 256] )
-#     roihist = cv2.calcHist([roi_hsv],[0], None, [256], [0, 256] )
-    
-    # normalize histogram and apply backprojection
-    cv2.normalize(roihist,roihist,0,255,cv2.NORM_MINMAX)
-    dst = cv2.calcBackProject([img_hsv],[0,1],roihist,[0,256,0,256],1)
-#     dst = cv2.calcBackProject([img_hsv],[0],roihist,[0,256],1)
-
-    # Now convolute with circular disc
-    disc = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(3,3))
-    cv2.filter2D(dst,-1,disc,dst)
-    
-    # threshold and binary AND
-    ret,thresh = cv2.threshold(dst,10,250,cv2.THRESH_BINARY_INV)
-
-    return thresh
-
 
 ###########################################################################################
 # This method extracts lane line from warped image by creating a binarized image 
@@ -261,20 +208,6 @@ class Line():
 
     def build_perspective_transformer(self):
 
-		# Based on test_images/straight_lines2.jpg
-        '''
-        corners = np.float32([[253, 697], [585, 456], [700, 456], [1061, 690]])
-        new_top_left = np.array([corners[0, 0], 0])
-        new_top_right = np.array([corners[3, 0], 0])
-        offset = [50, 0]
-
-        src = np.float32([corners[0], corners[1], corners[2], corners[3]])
-        dst = np.float32([corners[0] + offset, new_top_left + offset, new_top_right - offset, corners[3] - offset])
-
-        perspective = Perspective_Transformer(src, dst)
-        return perspective
-        '''
-
         corners = np.float32([[277, 670], [582, 457], [703, 457], [1046, 670]])
 
         src = np.float32([corners[0], corners[1], corners[2], corners[3]])
@@ -284,11 +217,9 @@ class Line():
         return perspective
 
     def build_camera_calibrator(self):
-        """
-        :return:
-        """
+
         glob_regex = glob.glob('./camera_cal/calibration*.jpg')
-        calibrator = CameraCalibrator(glob_regex,9, 6, init_coef=True)
+        calibrator = CameraCalibrator(glob_regex,9, 6, init_coef=False)
         return calibrator
 
     def init_lane_finder(self, binary_warped):
@@ -337,7 +268,8 @@ class Line():
             win_xleft_high = leftx_current + margin
             win_xright_low = rightx_current - margin
             win_xright_high = rightx_current + margin
-
+            
+			# Search pixels in sliding windows
             good_left_inds = (  (nonzeroy >= win_y_low) 
 								& (nonzeroy < win_y_high) 
 								& (nonzerox >= win_xleft_low) 
@@ -375,7 +307,8 @@ class Line():
         ploty = np.linspace(0, binary_warped.shape[0] - 1, binary_warped.shape[0])
         left_fitx = self.left_fit[0] * ploty ** 2 + self.left_fit[1] * ploty + self.left_fit[2]
         right_fitx  = self.right_fit[0] * ploty ** 2 + self.right_fit[1] * ploty + self.right_fit[2]
-
+        
+		# First detect lane lines
         self.detected = True
 
         return left_fitx, right_fitx
@@ -425,14 +358,17 @@ class Line():
 
         # Caculate the distance in pixels between left and right intersection points
         road_width_in_pixels = right_intersection - left_intersection
-        assert road_width_in_pixels > 0, 'Road width in pixel can not be negative'
+
+        # Here means something wrong with lane finding 
+        assert road_width_in_pixels > 0, 'Road width in pixel must be positive!!'
+
         # Since average highway lane line width in US is about 3.7m
         # Assume lane is about 30 meters long and 3.7 meters wide
-        # we calculate length per pixel need ensure "order of magnitude" correct
+        # we calculate length per pixel and ensure "order of magnitude" correct
         xm_per_pix = 3.7 / road_width_in_pixels
         ym_per_pix = 30 / image_size[0]
 
-        # Recalculate road curvature in X-Y space
+        # Calculate road curvature in X-Y space
         ploty = np.linspace(0, image_size[0]-1, num=image_size[0])
         y_eval = np.max(ploty)
 
@@ -444,7 +380,7 @@ class Line():
         left_curverad = ((1 + (2 * left_fit_cr[0] * y_eval * ym_per_pix + left_fit_cr[1]) ** 2) ** 1.5) / np.absolute(2 * left_fit_cr[0])
         right_curverad = ((1 + (2 * right_fit_cr[0] * y_eval * ym_per_pix + right_fit_cr[1]) ** 2) ** 1.5) / np.absolute(2 * right_fit_cr[0])
 
-        # Calculate the lane deviation
+        # Calculate the lane deviation of the car
         calculated_center = (left_intersection + right_intersection) / 2.0
         lane_deviation = (calculated_center - image_size[1] / 2.0) * xm_per_pix
         return left_curverad, right_curverad, lane_deviation
@@ -452,8 +388,8 @@ class Line():
     def fill_lane_lines(self,image, fit_left_x, fit_right_x):
 
         #This method highlights correct lane section on the road
-
         copy_image = np.zeros_like(image)
+
         fit_y = np.linspace(0, copy_image.shape[0] - 1, copy_image.shape[0])
 
         pts_left = np.array([np.transpose(np.vstack([fit_left_x, fit_y]))])
@@ -474,19 +410,19 @@ class Line():
 
         return result
 
+    ####################################################################
+    # Advance lane line finding pipeline
+    #1. Make undistorted image
+	#2. Warp undistorted image
+	#3. Binarize image through color and gradient threshhold
+	#4. Use sliding window to find left and right lanes
+	#5. Use buffer history found lanes to smooth the current lanes
+    #6. Caculate the left and right lane curvatures and vehicle offset of the center of the lane
+    #7. Unwarp processed image back and display
+    ####################################################################
+
     def image_process_pipeline(self, image):
-        """
-        This method takes an image as an input and produces an image with
-        1. Highlighted lane line
-        2. Left and right lane curvatures (in meters)
-        3. Vehicle offset of the center of the lane (in meters)
 
-        :param image:
-            Source image
-
-        :return:
-            Annotated image with lane line details
-        """
         image = np.copy(image)
         undistorted_image = self.calibrator.undistort(image)
         warped_image = self.perspective.warp(undistorted_image)
@@ -531,8 +467,8 @@ if __name__ == '__main__':
     from moviepy.editor import VideoFileClip
 
     line = Line()
-    output_file = './processed_project_video_shadow.mp4'
-    input_file = './project_video_shadow.mp4'
+    output_file = './processed_project_video.mp4'
+    input_file = './project_video.mp4'
     clip = VideoFileClip(input_file)
     out_clip = clip.fl_image(line.image_process_pipeline)
     out_clip.write_videofile(output_file, audio=False)
