@@ -54,8 +54,8 @@ I used a combination of L,S color channel (in HLS coloe space) and  Sobel operat
 The code for my perspective transform includes a function called `warp()` in class `Perspective_Transformer`, which appears in lines 85 through 88 in the file `Advanced_Lane_Finding.py`. The constructor function of class `Perspective_Transformer` take source (`src_points`) and destination (`dest_points`) points. The `warp()` function takes as inputs an image (`image`). I chose the hardcode the source and destination points in the following manner in class member function `Line.build_perspective_transformer`:
 
 ```python
- src = np.float32([corners[0], corners[1], corners[2], corners[3]])
- dst = np.float32([[277, 670], [277,0], [1046,0], [1046,670]])
+src = np.float32([[277, 670], [582, 457], [703, 457], [1046, 670]])
+dst = np.float32([[277, 670], [277,0], [1046,0], [1046,670]])
 ```
 
 This resulted in the following source and destination points:
