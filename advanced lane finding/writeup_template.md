@@ -18,7 +18,7 @@ The goals / steps of this project are the following:
 [image5]: ./examples/lane_fit.png "Fit Visual"
 [image6]: ./examples/map_lane.png "Output"
 [image7]: ./examples/processed_video.png "Video"
-[video1]: ./processed_project_video.mp4 "Video"
+[video1]: ./preprocessed_project_video.mp4 "Video"
 
 ---
 
