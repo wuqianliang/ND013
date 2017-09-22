@@ -210,9 +210,7 @@ class Line():
 
     def build_perspective_transformer(self):
 
-        corners = np.float32([[277, 670], [582, 457], [703, 457], [1046, 670]])
-
-        src = np.float32([corners[0], corners[1], corners[2], corners[3]])
+        src = np.float32([[277, 670], [582, 457], [703, 457], [1046, 670]])
         dst = np.float32([[277, 670], [277,0], [1046,0], [1046,670]])
 
         perspective = Perspective_Transformer(src, dst)
