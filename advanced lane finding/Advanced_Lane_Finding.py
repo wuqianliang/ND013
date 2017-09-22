@@ -37,6 +37,7 @@ class CameraCalibrator:
         object_point[:,:2] = np.mgrid[0:self.x_corners, 0:self.y_corners].T.reshape(-1, 2)
 
         for idx, file_name in enumerate(self.calibration_images):
+
             image = mpimg.imread(file_name)
             gray_image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
             ret, corners = cv2.findChessboardCorners(gray_image,(self.x_corners, self.y_corners),None)
@@ -463,14 +464,12 @@ class Line():
 
         return merged_image
 
-'''
 if __name__ == '__main__':
 
 
     line = Line()
-    output_file = './processed_harder_challenge_video.mp4'
-    input_file = './harder_challenge_video.mp4'
+    output_file = './processed_project_video.mp4'
+    input_file = './project_video.mp4'
     clip = VideoFileClip(input_file)
     out_clip = clip.fl_image(line.image_process_pipeline)
     out_clip.write_videofile(output_file, audio=False)
-'''
