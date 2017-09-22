@@ -14,9 +14,9 @@ The goals / steps of this project are the following:
 [image1]: ./examples/undistorted_output.png "Undistort"
 [image2]: ./test_images/test6.jpg "Road Transformed"
 [image3]: ./examples/binaraized_test6.png "Binary Example"
-[image4]: ./examples/warped_straight_lines.jpg "Warp Example"
-[image5]: ./examples/color_fit_lines.jpg "Fit Visual"
-[image6]: ./examples/example_output.jpg "Output"
+[image4]: ./examples/warped_binarized_test6.png "Warp Example"
+[image5]: ./examples/lane_fit.png "Fit Visual"
+[image6]: ./examples/map_lane.png "Output"
 [video1]: ./project_video.mp4 "Video"
 
 ---
@@ -53,10 +53,8 @@ I used a combination of L,S color channel (in HLS coloe space) and  Sobel operat
 The code for my perspective transform includes a function called `warp()` in class `Perspective_Transformer`, which appears in lines 85 through 88 in the file `Advanced_Lane_Finding.py`. The constructor function of class `Perspective_Transformer` take source (`src_points`) and destination (`dest_points`) points. The `warp()` function takes as inputs an image (`image`). I chose the hardcode the source and destination points in the following manner in class member function `Line.build_perspective_transformer`:
 
 ```python
-  
  src = np.float32([corners[0], corners[1], corners[2], corners[3]])
  dst = np.float32([[277, 670], [277,0], [1046,0], [1046,670]])
-
 ```
 
 This resulted in the following source and destination points:
@@ -80,11 +78,11 @@ Then I did some other stuff and fit my lane lines with a 2nd order polynomial ki
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+I did this in `lines 349 through 384` in my code in `Advanced_Lane_Finding.py`
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+I implemented this step in `lines 387 through 410` in my code in `Advanced_Lane_Finding.py` in the function `fill_lane_lines()` and `merge_images()`.  Here is an example of my result on a test image:
 
 ![alt text][image6]
 
