@@ -230,7 +230,7 @@ class Line():
         # get midpoint of the histogram i.e half of width
         midpoint = np.int(histogram.shape[0] / 2)
 
-        # get left and right halves points of the histogram
+        # get left and right half points of the histogram
         leftx_base = np.argmax(histogram[:midpoint])
         rightx_base = np.argmax(histogram[midpoint:]) + midpoint
 
