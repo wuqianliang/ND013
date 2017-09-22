@@ -103,3 +103,7 @@ Here's a [link to my video result](./processed_project_video.mp4)
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 I use HLS color and X direction derivative  threshhold to binarizely filter pixel of lane line, this approach works when there is only yellow and white lane lines ,and the situation of road are perfect which means the rest of road excluded lane lines is all black.But in challenge video, the road are fixed which make extra unnormal lines on the road which makes lane line finding failed. 
 On the other hand ,I use the histogram of pixel to find the bottom point in image of lane lines, which also makes failed detection, in future I will use instance Segmentation in deep learning algrthm to inprove de lane line area detection.
+
+
+### Reference
+My code refer to  code from this github https://github.com/upul/CarND-Advanced-Lane-Lines  which was helpful for me to complete my porject , thanks.
