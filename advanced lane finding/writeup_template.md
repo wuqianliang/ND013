@@ -1,4 +1,4 @@
-**Advanced Lane Finding Project**
+*Advanced Lane Finding Project*
 
 The goals / steps of this project are the following:
 
@@ -22,8 +22,6 @@ The goals / steps of this project are the following:
 [video1]: ./project_video.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
-
-### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
 ---
 
