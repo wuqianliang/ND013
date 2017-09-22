@@ -93,7 +93,7 @@ I implemented this step in `lines 387 through 410` in my code in `Advanced_Lane_
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./preprocessed_project_video.mp4)
+Here's a [link to my video result](./processed_project_video.mp4)
 
 ![alt text][image7]
 
