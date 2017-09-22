@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+from moviepy.editor import VideoFileClip
 
 # store camera calibration parameters in ./camera_cal/calibrated_data.p
 CALIBRATED_DATA_FILE = './camera_cal/calibrated_data.p'
@@ -462,9 +463,9 @@ class Line():
 
         return merged_image
 
-
+'''
 if __name__ == '__main__':
-    from moviepy.editor import VideoFileClip
+
 
     line = Line()
     output_file = './processed_harder_challenge_video.mp4'
@@ -472,3 +473,4 @@ if __name__ == '__main__':
     clip = VideoFileClip(input_file)
     out_clip = clip.fl_image(line.image_process_pipeline)
     out_clip.write_videofile(output_file, audio=False)
+'''
