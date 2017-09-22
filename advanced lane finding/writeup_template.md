@@ -28,7 +28,7 @@ The goals / steps of this project are the following:
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for this step is contained in `lines 34 through 59` in member method `calibrate_via_chessboards` of class `CameraCalibrator` in the file called `Advanced_Lane_Finding.py`).
+The code for this step is contained in `lines 34 through 60` in member method `calibrate_via_chessboards` of class `CameraCalibrator` in the file called `Advanced_Lane_Finding.py`).
 
 I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `object_point` is just a replicated array of coordinates, and `object_points` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `image_points` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
 
@@ -45,7 +45,7 @@ To demonstrate this step, I will describe how I apply the distortion correction 
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of L,S color channel (in HLS coloe space) and  Sobel operator in X direction  thresholds  to generate a binary image (thresholding steps at `lines 185`  in `Advanced_Lane_Finding.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+I used a combination of L,S color channel (in HLS coloe space) and  Sobel operator in X direction  thresholds  to generate a binary image (thresholding steps at `lines 186`  in `Advanced_Lane_Finding.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
 
 ![alt text][image3]
 
@@ -79,11 +79,11 @@ Then I did some other stuff and fit my lane lines with a 2nd order polynomial ki
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in `lines 349 through 384` in my code in `Advanced_Lane_Finding.py`
+I did this in `lines 350 through 386` in my code in `Advanced_Lane_Finding.py`
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in `lines 387 through 410` in my code in `Advanced_Lane_Finding.py` in the function `fill_lane_lines()` and `merge_images()`.  Here is an example of my result on a test image:
+I implemented this step in `lines 388 through 411` in my code in `Advanced_Lane_Finding.py` in the function `fill_lane_lines()` and `merge_images()`.  Here is an example of my result on a test image:
 
 ![alt text][image6]
 
