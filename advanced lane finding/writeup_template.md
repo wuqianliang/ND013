@@ -22,7 +22,7 @@ The goals / steps of this project are the following:
 
 ---
 
-### Writeup / README
+### Writeup 
 
 ### Camera Calibration
 
