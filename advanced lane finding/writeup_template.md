@@ -27,7 +27,7 @@ The goals / steps of this project are the following:
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for this step is contained in lines # 34~59 # in member method `calibrate_via_chessboards` of class `CameraCalibrator` in the file called `Advanced_Lane_Finding.py`).
+The code for this step is contained in `lines 34 through 59` in member method `calibrate_via_chessboards` of class `CameraCalibrator` in the file called `Advanced_Lane_Finding.py`).
 
 I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `object_point` is just a replicated array of coordinates, and `object_points` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `image_points` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
 
@@ -44,35 +44,29 @@ To demonstrate this step, I will describe how I apply the distortion correction 
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of L,S color channel (in HLS coloe space) and  Sobel operator in X direction  thresholds  to generate a binary image (thresholding steps at lines # 185 # in `Advanced_Lane_Finding.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+I used a combination of L,S color channel (in HLS coloe space) and  Sobel operator in X direction  thresholds  to generate a binary image (thresholding steps at `lines 185`  in `Advanced_Lane_Finding.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
 
 ![alt text][image3]
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+The code for my perspective transform includes a function called `warp()` in class `Perspective_Transformer`, which appears in lines 85 through 88 in the file `Advanced_Lane_Finding.py`. The constructor function of class `Perspective_Transformer` take source (`src_points`) and destination (`dest_points`) points. The `warp()` function takes as inputs an image (`image`). I chose the hardcode the source and destination points in the following manner in class member function `Line.build_perspective_transformer`:
 
 ```python
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
+  
+ src = np.float32([corners[0], corners[1], corners[2], corners[3]])
+ dst = np.float32([[277, 670], [277,0], [1046,0], [1046,670]])
+
 ```
 
 This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+| 277, 670      | 277, 670      | 
+| 582, 457      | 277,0         |
+| 703, 457      | 1046,0        |
+| 1046, 670     | 1046,670      |
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
