@@ -17,7 +17,8 @@ The goals / steps of this project are the following:
 [image4]: ./examples/warped_binarized_test6.png "Warp Example"
 [image5]: ./examples/lane_fit.png "Fit Visual"
 [image6]: ./examples/map_lane.png "Output"
-[video1]: ./project_video.mp4 "Video"
+[image7]: ./examples/processed_video.png "Video"
+[video1]: ./processed_project_video.mp4 "Video"
 
 ---
 
@@ -92,12 +93,15 @@ I implemented this step in `lines 387 through 410` in my code in `Advanced_Lane_
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](./preprocessed_project_video.mp4)
 
+![alt text][image7]
 ---
 
 ### Discussion
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+    I use HLS color and X direction derivative  threshhold to binarizely filter pixel of lane line, this approach works when there is only yellow and white lane lines ,and the situation of road are perfect which means the rest of road excluded lane lines is all black.But in challenge video, the road are fixed which make extra unnormal lines on the road which makes lane line finding failed. 
+    On the other hand ,I use the histogram of pixel to find the bottom point in image of lane lines, which also makes failed detection, in future I will use instance Segmentation in deep learning algrthm to inprove de lane line area detection.
+
