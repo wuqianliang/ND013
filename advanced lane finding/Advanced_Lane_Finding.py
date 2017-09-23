@@ -183,7 +183,7 @@ def binary_pipeline(image,
 
     # Return the combined binary image
     binary = np.zeros_like(sxbinary)
-    binary[(((l_binary == 1) & (s_binary == 1) | (sxbinary == 1)) ) ] = 1
+    binary[((l_binary == 1) & (s_binary == 1) | (sxbinary == 1))] = 1
     binary = 255 * np.dstack((binary, binary, binary)).astype('uint8')
 
     return noise_reduction(binary)
@@ -400,14 +400,11 @@ class Line():
 
         return copy_image
 
-    def merge_images(self, binary_img, src_image):
+    def merge_images(self, binary_img, undistorted_src_img):
 
         copy_binary = np.copy(binary_img)
-        copy_src_img = np.copy(src_image)
-
-        copy_binary_pers = self.perspective.unwarp(copy_binary)
-        result = cv2.addWeighted(copy_src_img, 1, copy_binary_pers, 0.3, 0)
-
+        undistorted_copy_src_img = np.copy(undistorted_src_img)
+        result = cv2.addWeighted(undistorted_copy_src_img, 1, self.perspective.unwarp(copy_binary), 0.3, 0)
         return result
 
     ####################################################################
@@ -447,18 +444,18 @@ class Line():
             ave_left = np.median(self.buffer_left, axis=0)
             ave_right = np.median(self.buffer_right, axis=0)
 
-        left_curvature, right_curvature, lane_deviation = self.calculate_road_parameters(image.shape, ave_left, ave_right)
+        left_curvature, right_curvature, lane_deviation = self.calculate_road_parameters(binary_image.shape, ave_left, ave_right)
         left_lane_curv_text = 'Estimated left Curvature  : {:.2f} m'.format(left_curvature)
         right_lane_curv_text = 'Estimated right Curvature : {:.2f} m'.format(right_curvature)
         font = cv2.FONT_HERSHEY_COMPLEX
-        cv2.putText(image, left_lane_curv_text, (50, 50), font, 1, (250, 250, 0), 2)
-        cv2.putText(image, right_lane_curv_text, (50, 90), font, 1, (250, 250, 0), 2)
+        cv2.putText(undistorted_image, left_lane_curv_text, (50, 50), font, 1, (250, 250, 0), 2)
+        cv2.putText(undistorted_image, right_lane_curv_text, (50, 90), font, 1, (250, 250, 0), 2)
 
         deviation_text = 'Estimated lane Deviation: {:.3f} m'.format(lane_deviation)
-        cv2.putText(image, deviation_text, (50, 130), font, 1, (250, 250, 0), 2)
+        cv2.putText(undistorted_image, deviation_text, (50, 130), font, 1, (250, 250, 0), 2)
 
         filled_image = self.fill_lane_lines(binary_image, ave_left, ave_right)
-        merged_image = self.merge_images(filled_image, image)
+        merged_image = self.merge_images(filled_image, undistorted_image)
 
         return merged_image
 
