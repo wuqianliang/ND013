@@ -77,7 +77,7 @@ First I use histogram of pixels to find the bottm point of left and right lane l
 ![alt text][image5]
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
-After fitting curve in pixels with form `f(y)= A*power(y,2)+B*y+C`, set `y= image_size[0]` , I get left_intersection and right_intersection which are the bottom pixel points of left and right lane in image. Then we use them to calculate length (in meters) per pixel and fit new polynomials to x,y in world space.
+After fitting curve in pixels with form `f(y)= A*power(y,2)+B*y+C`, set `y= image_size[0]` , I get left_intersection and right_intersection which are the bottom pixel points of left and right lane in image. Then we use them to calculate length (in meters) per pixel and fit new polynomials to x,y in world space. Then I caculate the radius of curvature of the lane at the bottom Y position `np.max(ploty)`. The position of the vehicle with respect to center was caculated at pixel space and then map to world space by `xm_per_pix` scale factor.
 I did this in `lines 350 through 386` in my code in `Advanced_Lane_Finding.py`
 
 
