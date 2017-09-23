@@ -17,7 +17,7 @@ The goals / steps of this project are the following:
 [image4]: ./examples/warped_binarized_test6.png "Warp Example"
 [image5]: ./examples/lane_fit.png "Fit Visual"
 [image6]: ./examples/map_lane.png "Output"
-[image7]: ./examples/processed_video.png "Video"
+[image7]: ./examples/processed_video1.png "Video"
 [video1]: ./processed_project_video.mp4 "Video"
 
 ---
