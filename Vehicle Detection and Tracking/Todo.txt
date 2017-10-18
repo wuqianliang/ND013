@@ -1,0 +1,3 @@
+distance from detected cars
+remove some bugs
+prevent jittering
