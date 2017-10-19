@@ -155,16 +155,16 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 ### Here are two frames and their corresponding heatmaps and output of `scipy.ndimage.measurements.label()`:
 
-![alt text][image2] ![alt text][image3]
+![alt text][image2]
 
 ### Here the resulting bounding boxes are drawn onto the last frame in the series:
 ![alt text][image5]
 
 ---
 
-###Discussion
+### Discussion
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 In this project,I use the HOG feature extraction, svm classifier to predtict car object , hog-susampling to speed up feature extraction, heatmap filtering and labeling to remove false positive boxes. 
 
