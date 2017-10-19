@@ -55,11 +55,61 @@ Here is an example using the gray scaled image and HOG parameters of `orientatio
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
-I tried various combinations of parameters and test with svc classifier found that the LUV color space and hog channel 0 made better prediction accuracy.The hog feature 
+I tried various combinations of parameters and test with svc classifier found that the LUV color space and hog channel 0 made better prediction accuracy in detection pipeline! The hog feature extraction speed showed below:
+color space:  RGB  HOG channel: 0
+1.65 Seconds to extract featrues
+color space:  RGB  HOG channel: 1
+0.99 Seconds to extract featrues
+color space:  RGB  HOG channel: 2
+0.91 Seconds to extract featrues
+color space:  HSV  HOG channel: 0
+0.93 Seconds to extract featrues
+color space:  HSV  HOG channel: 1
+0.93 Seconds to extract featrues
+color space:  HSV  HOG channel: 2
+0.92 Seconds to extract featrues
+color space:  LUV  HOG channel: 0
+1.06 Seconds to extract featrues
+color space:  LUV  HOG channel: 1
+0.94 Seconds to extract featrues
+color space:  LUV  HOG channel: 2
+0.93 Seconds to extract featrues
+color space:  HLS  HOG channel: 0
+0.91 Seconds to extract featrues
+color space:  HLS  HOG channel: 1
+0.93 Seconds to extract featrues
+color space:  HLS  HOG channel: 2
+0.92 Seconds to extract featrues
+color space:  YUV  HOG channel: 0
+0.96 Seconds to extract featrues
+color space:  YUV  HOG channel: 1
+0.92 Seconds to extract featrues
+color space:  YUV  HOG channel: 2
+0.92 Seconds to extract featrues
+color space:  YCrCb  HOG channel: 0
+0.93 Seconds to extract featrues
+color space:  YCrCb  HOG channel: 1
+0.92 Seconds to extract featrues
+color space:  YCrCb  HOG channel: 2
+0.93 Seconds to extract featrues
+
+But even the fastest feature extraction of color space and hog channel did not make good performence in detection pipeline.
 
 ####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM using...
+I nomalized train data features by the method sklearn.StandardScaler(). The data is splitted into thaining and testing subsets using train_test_split(80% and 20%). I use combined features of Spatial features,Histogram features,HOG features and with other parameters settings:
+`color_space = 'LUV' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient = 8  # HOG orientations
+pix_per_cell = 8 # HOG pixels per cell
+cell_per_block = 2 # HOG cells per block
+hog_channel = 0 # Can be 0, 1, 2, or "ALL"
+spatial_size = (16, 16) # Spatial binning dimensions
+hist_bins = 32    # Number of histogram bins
+spatial_feat = True # Spatial features on or off
+hist_feat = True # Histogram features on or off
+hog_feat = True # HOG features on or off`
+
+The length of feture vector is 2432!
 
 ###Sliding Window Search
 
