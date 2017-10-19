@@ -1,8 +1,3 @@
-##Writeup Template
-###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
----
-
 **Vehicle Detection Project**
 
 The goals / steps of this project are the following:
@@ -15,14 +10,23 @@ The goals / steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
-[video1]: ./project_video.mp4
+[image1]: ./output_images/data_example.png
+[image2]: ./output_images/falsepositvie1.png
+[image3]: ./output_images/falsepositvie2.png
+[image4]: ./output_images/hog_example.png
+[image5]: ./output_images/hog_subsample1.png
+[image6]: ./output_images/hog_subsample2.png
+[image7]: ./output_images/hog_subsample3.png
+[image8]: ./output_images/hog_subsample4.png
+[image9]: ./output_images/hog_subsample5.png
+[image10]: ./output_images/hog_subsample6.png
+[image11]: ./output_images/scan_roi.png
+[image12]: ./output_images/sliding_detect_example1.png
+[image13]: ./output_images/sliding_detect_example2.png
+[image14]: ./output_images/sliding_detect_example2.png
+[image15]: ./output_images/sliding_detect_example2.png
+
+[video1]: ./processed_project_video.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
 ###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
