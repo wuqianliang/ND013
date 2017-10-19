@@ -34,7 +34,7 @@ The goals / steps of this project are the following:
 ---
 ### Writeup / README
 
-** All code for project and results are in Vehicle_Detection_and_Tracking.html/Vehicle_Detection_and_Tracking.ipynb **
+**All code for project and results are in Vehicle_Detection_and_Tracking.html/Vehicle_Detection_and_Tracking.ipynb**
 
 ### Histogram of Oriented Gradients (HOG)
 
