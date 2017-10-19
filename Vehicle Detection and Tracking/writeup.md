@@ -56,7 +56,8 @@ Here is an example using the gray scaled image and HOG parameters of `orientatio
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
 I tried various combinations of parameters and test with svc classifier found that the LUV color space and hog channel 0 made better prediction accuracy in detection pipeline! The hog feature extraction speed showed below:
-color space:  RGB  HOG channel: 0
+
+`color space:  RGB  HOG channel: 0
 1.65 Seconds to extract featrues
 color space:  RGB  HOG channel: 1
 0.99 Seconds to extract featrues
@@ -91,13 +92,14 @@ color space:  YCrCb  HOG channel: 0
 color space:  YCrCb  HOG channel: 1
 0.92 Seconds to extract featrues
 color space:  YCrCb  HOG channel: 2
-0.93 Seconds to extract featrues
+0.93 Seconds to extract featrues`
 
 But even the fastest feature extraction of color space and hog channel did not make good performence in detection pipeline.
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
 I nomalized train data features by the method sklearn.StandardScaler(). The data is splitted into thaining and testing subsets using train_test_split(80% and 20%). I use combined features of Spatial features,Histogram features,HOG features and with other parameters settings:
+
 `color_space = 'LUV' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
 orient = 8  # HOG orientations
 pix_per_cell = 8 # HOG pixels per cell
@@ -116,8 +118,11 @@ The length of feture vector is 2432!
 #### 1. Describe how you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
 I decide search cars in some ROI area of image, like this:
+
 ![alt text][image11]
+
 The code is following:
+
 `windows = slide_window(image, x_start_stop=[800, 1280], y_start_stop=[400, 650], 
                     xy_window=(128, 128), xy_overlap=(0.85, 0.85))
 windows += slide_window(image, x_start_stop=[0, 600], y_start_stop=[400, 650], 
@@ -138,25 +143,22 @@ Ultimately I searched on two scales using LUV 0-channel HOG features plus spatia
 
 ### Video Implementation
 
-####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
+#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
+Here's a [link to my video result](./processed_project_video.mp4)
 
 
-####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
+#### 2. Describe how you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
-### Here are six frames and their corresponding heatmaps:
+### Here are two frames and their corresponding heatmaps and output of `scipy.ndimage.measurements.label()`:
 
-![alt text][image5]
-
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
+![alt text][image2] ![alt text][image3]
 
 ### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
+![alt text][image5]
 
 
 
