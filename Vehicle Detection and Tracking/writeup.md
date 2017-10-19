@@ -173,3 +173,6 @@ The todo list include following:
 2. Caculate the distance between the detected cars and camera.
 3. Transform project to C++ code and made some code  optimize to speed up pipeline to get 10fps performance.
 
+### Reference
+
+My code refer to code from this github https://github.com/NikolasEnt/Vehicle-Detection-and-Tracking which was helpful for me to complete my porject , thanks.
