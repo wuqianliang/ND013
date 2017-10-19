@@ -95,7 +95,7 @@ color space:  YCrCb  HOG channel: 2
 
 But even the fastest feature extraction of color space and hog channel did not make good performence in detection pipeline.
 
-####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
+#### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
 I nomalized train data features by the method sklearn.StandardScaler(). The data is splitted into thaining and testing subsets using train_test_split(80% and 20%). I use combined features of Spatial features,Histogram features,HOG features and with other parameters settings:
 `color_space = 'LUV' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
@@ -111,19 +111,29 @@ hog_feat = True # HOG features on or off`
 
 The length of feture vector is 2432!
 
-###Sliding Window Search
+### Sliding Window Search
 
-####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
+#### 1. Describe how you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+I decide search cars in some ROI area of image, like this:
+![alt text][image11]
+The code is following:
+`windows = slide_window(image, x_start_stop=[800, 1280], y_start_stop=[400, 650], 
+                    xy_window=(128, 128), xy_overlap=(0.85, 0.85))
+windows += slide_window(image, x_start_stop=[0, 600], y_start_stop=[400, 650], 
+                    xy_window=(128, 128), xy_overlap=(0.85, 0.85))
+window_img = draw_boxes(image, windows, color=(0, 0, 255), thick=6) 
+windows = slide_window(image, x_start_stop=[400, 1000], y_start_stop=[400, 500], 
+                    xy_window=(64, 64), xy_overlap=(0.75, 0.75))
+window_img = draw_boxes(window_img, windows, color=(0, 255, 0), thick=6) `
 
-![alt text][image3]
+The green area use small scale windows and the red area use bigger scale windows, because cars object in the middle of image are far cars which are small, left and right side of image are nearby cars which are bigger in pixels.
 
-####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+Ultimately I searched on two scales using LUV 0-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
 
-![alt text][image4]
+![alt text][image5] ![alt text][image6]
 ---
 
 ### Video Implementation
