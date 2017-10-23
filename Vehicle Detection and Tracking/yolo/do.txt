@@ -1,0 +1,2 @@
+get YOLOv2 608x608  cfg and weights
+./yad2k.py yolo/yolo.cfg yolo/yolo.weights yolo/yolo.h5
