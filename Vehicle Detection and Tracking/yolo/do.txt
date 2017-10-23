@@ -1,2 +1,4 @@
 get YOLOv2 608x608  cfg and weights
+wget  https://pjreddie.com/media/files/yolo.weights   yolo/yolo.weights
+wget https://github.com/pjreddie/darknet/blob/master/cfg/yolo.cfg yolo/yolo.cfg
 ./yad2k.py yolo/yolo.cfg yolo/yolo.weights yolo/yolo.h5
